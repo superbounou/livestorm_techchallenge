@@ -8,14 +8,14 @@ resource "random_id" "this" {
 
 resource "aws_autoscaling_group" "this" {
   default_cooldown          = 60
-  desired_capacity          = 1
+  desired_capacity          = 3
   health_check_grace_period = 120
   health_check_type         = "EC2"
   launch_configuration      = aws_launch_configuration.this.id
   min_size                  = 1
   max_size                  = 5
   name                      = "autoscaling-${var.name}-${random_id.this.hex}"
-  vpc_zone_identifier       = [var.subnet_id]
+  vpc_zone_identifier       = var.vpc_subnets
 
   tags = [
     {

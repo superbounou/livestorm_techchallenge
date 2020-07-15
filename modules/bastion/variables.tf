@@ -21,10 +21,11 @@ variable "vpc_id" {
   description = "The ID of the VPC."
 }
 
-variable "subnet_id" {
-  type        = string
-  description = "Subnet ID."
+variable "vpc_subnets" {
+  type        = list(string)
+  description = "A list of VPC subnet IDs."
 }
+
 
 variable "ingress_cidr_block" {
   type        = string
