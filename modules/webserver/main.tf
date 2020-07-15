@@ -36,23 +36,22 @@ resource "aws_autoscaling_group" "this" {
 }
 
 resource "aws_launch_configuration" "this" {
-  enable_monitoring           = true
-  iam_instance_profile        = aws_iam_instance_profile.this.name
-  image_id                    = data.aws_ami.this.id
-  instance_type               = var.instance_type
-  key_name                    = var.key_name
-  name                        = "launchconf-${var.name}-${random_id.this.hex}"
-  security_groups             = [aws_security_group.this.id]
-  associate_public_ip_address = true
-  
+  enable_monitoring    = true
+  iam_instance_profile = aws_iam_instance_profile.this.name
+  image_id             = data.aws_ami.this.id
+  instance_type        = var.instance_type
+  key_name             = var.key_name
+  name_prefix          = "livestream-lc-"
+  security_groups      = [aws_security_group.this.id]
+
   lifecycle {
     create_before_destroy = true
   }
 }
 
 resource "aws_security_group" "this" {
-  name        = "allow_connections_jitsi-meet"
-  description = "Allow traffic on UDP 10000 (JVB) TCP 443 (HTTPS) UDP 53 (DNS)"
+  name        = "livestream-sg-http"
+  description = "Allow traffic on TCP 80 (HTTP) TCP 443 (HTTPS)"
   vpc_id      = var.vpc_id
 
   dynamic "ingress" {

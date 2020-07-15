@@ -2,7 +2,7 @@ data "aws_ami" "this" {
   most_recent = true
   owners      = ["self"]
 
-tags = {
+  tags = {
     Name   = "Webserver"
     Tested = "true"
   }

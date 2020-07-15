@@ -125,14 +125,14 @@ module "bastion" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# JITSI
+# WEBSERVER
 # ---------------------------------------------------------------------------------------------------------------------
 
-module "jisti" {
+module "webserver" {
   source            = "./modules/webserver"
   vpc_id            = aws_vpc.livestream_vpc.id
-  subnet_id         = aws_subnet.livestream_pubsubnet.id
+  subnet_id         = aws_subnet.livestream_privsubnet.id
   key_name          = var.key_name
-  instance_type     = "t3.micro"
+  instance_type     = "t2.micro"
   enable_ssh_access = true
 }

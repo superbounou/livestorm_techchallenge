@@ -13,7 +13,7 @@ variable "key_name" {
 variable "instance_type" {
   type        = string
   description = "The instance type of the EC2 instance."
-  default     = "t3.micro"
+  default     = "t2.micro"
 }
 
 variable "vpc_id" {
