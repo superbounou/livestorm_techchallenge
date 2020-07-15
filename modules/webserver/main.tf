@@ -6,6 +6,8 @@ resource "random_id" "this" {
   byte_length = 1
 }
 
+# ----------- AUTOSCALING GROUP
+
 resource "aws_autoscaling_group" "this" {
   default_cooldown          = 60
   desired_capacity          = 3
@@ -48,6 +50,8 @@ resource "aws_launch_configuration" "this" {
     create_before_destroy = true
   }
 }
+
+# ----------- SECURITY GROUP
 
 resource "aws_security_group" "this" {
   name        = "livestream-sg-http"
@@ -94,6 +98,9 @@ resource "aws_security_group" "this" {
     create_before_destroy = true
   }
 }
+
+
+# ----------- IAM
 
 resource "aws_iam_instance_profile" "this" {
   name = "${var.name}-${random_id.this.hex}"
