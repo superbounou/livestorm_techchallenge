@@ -137,7 +137,7 @@ resource "aws_route_table" "public" {
   }
 }
 
-resource "aws_route_table" "private" {
+resource "aws_route_table" "priv1" {
   vpc_id = aws_vpc.this.id
   route {
     cidr_block     = "0.0.0.0/0"
@@ -150,24 +150,36 @@ resource "aws_route_table" "private" {
   }
 }
 
+resource "aws_route_table" "priv2" {
+  vpc_id = aws_vpc.this.id
+  route {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.this_2.id
+  }
+  tags = {
+    Name      = "Route table private"
+    Terraform = "true"
+    Env       = var.env
+  }
+}
+
+
 resource "aws_route_table_association" "pub_1" {
   subnet_id      = aws_subnet.pub1.id
   route_table_id = aws_route_table.public.id
 }
 
 resource "aws_route_table_association" "pub_2" {
-  subnet_id      = aws_subnet.pub1.id
+  subnet_id      = aws_subnet.pub2.id
   route_table_id = aws_route_table.public.id
 }
 
 resource "aws_route_table_association" "priv_1" {
-  count          = 2
-  subnet_id      = element(aws_subnet.priv1.*.id, count.index)
-  route_table_id = aws_route_table.private.id
+  subnet_id      = aws_subnet.priv1.id
+  route_table_id = aws_route_table.priv1.id
 }
 
 resource "aws_route_table_association" "priv_2" {
-  count          = 2
-  subnet_id      = element(aws_subnet.priv2.*.id, count.index)
-  route_table_id = aws_route_table.private.id
+  subnet_id      = aws_subnet.priv2.id
+  route_table_id = aws_route_table.priv2.id
 }
