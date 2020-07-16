@@ -43,8 +43,6 @@ jobs:
           root: ~/project
           paths:
             - .
-orbs:
-  aws-cli: circleci/aws-cli@1.2.1
 
 workflows:
    version: 2
