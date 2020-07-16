@@ -1,12 +1,12 @@
 # Technical test
 
-Ce module Terraform déploie une infrastructure haute-disponibilité sur deux AZ. L'application déployée est un serveur Nginx.
+This Terraform module deploys a high availability infrastructure on two AZs. The application sample is an Nginx server.
 
 ## HOWTO
 
 * Fill your AWS credentials in the file `secrets.tfvars`
 * Generate on AWS region a key pair called `terraform`
-* Custom your settings in `terraform.tfvars``
+* Custom your settings in `terraform.tfvars`
 
 
 
