@@ -1,10 +1,10 @@
 variable "env" {
-  default = ""
+  default = "testing"
   type    = string
 }
 
 variable "key_name" {
-  default = ""
+  default = "terraform"
   type    = string
 }
 
@@ -19,7 +19,7 @@ variable "secret_key" {
 }
 
 variable "vpc_cidr_block" {
-  default = ""
+  default = "10.0.0.0/16"
   type    = string
 }
 
@@ -29,12 +29,12 @@ variable "region" {
 }
 
 variable "az_a" {
-  default = ""
+  default = "us-east-1a"
   type    = string
 }
 
 variable "az_b" {
-  default = ""
+  default = "us-east-1b"
   type    = string
 }
 
@@ -44,11 +44,11 @@ variable "instance_type" {
 }
 
 variable "domain" {
-  default = ""
+  default = "bounou.io"
   type    = string
 }
 
 variable "sub_domain" {
-  default = ""
+  default = "livestorm.bounou.io"
   type    = string
 }
