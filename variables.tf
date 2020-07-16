@@ -42,3 +42,13 @@ variable "instance_type" {
   default = "t2.micro"
   type    = string
 }
+
+variable "domain" {
+  default = ""
+  type    = string
+}
+
+variable "sub_domain" {
+  default = ""
+  type    = string
+}

@@ -43,3 +43,19 @@ module "webserver" {
   # debug purpose only
   enable_ssh_access = true
 }
+
+# ---------------------------------------------------------------------------------------------------------------------
+# DNS
+# ---------------------------------------------------------------------------------------------------------------------
+
+resource "aws_route53_zone" "this" {
+  name = var.domain
+}
+
+resource "aws_route53_record" "livestorm" {
+  zone_id = aws_route53_zone.this.zone_id
+  name    = var.sub_domain
+  type    = "CNAME"
+  ttl     = "60"
+  records = [module.webserver.lb_dns_name]
+}
