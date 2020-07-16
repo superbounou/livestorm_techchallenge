@@ -43,6 +43,23 @@ jobs:
           root: ~/project
           paths:
             - .
+            
+  terraform-apply-approval:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/project
+      - *tf-install
+      - run:
+         name: apply
+         command: |
+           # Uncomment the line below to allow CircleCI to apply the Terraform
+           # terraform apply -input=false -auto-approve plan.tfplan
+           echo Uncomment line 61 of config.yml to let CircleCI apply the Terraform
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - .
 
 workflows:
    version: 2
