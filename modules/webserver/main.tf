@@ -10,14 +10,14 @@ resource "random_id" "this" {
 
 resource "aws_autoscaling_group" "this" {
   default_cooldown          = 60
-  desired_capacity          = 3
+  desired_capacity          = 1
   health_check_grace_period = 120
   health_check_type         = "EC2"
   launch_configuration      = aws_launch_configuration.this.id
   min_size                  = 1
   max_size                  = 5
   name                      = "autoscaling-${var.name}-${random_id.this.hex}"
-  vpc_zone_identifier       = var.vpc_subnets
+  vpc_zone_identifier       = var.vpc_subnets_priv
 
   tags = [
     {
@@ -54,8 +54,8 @@ resource "aws_launch_configuration" "this" {
 # ----------- SECURITY GROUP
 
 resource "aws_security_group" "this" {
-  name        = "livestream-sg-http"
-  description = "Allow traffic on TCP 80 (HTTP) TCP 443 (HTTPS)"
+  name        = "securitygroup-webserver-${var.name}-${random_id.this.hex}"
+  description = "Allow traffic on TCP 80 (HTTP) TCP 443 (HTTPS) and SSH from local network"
   vpc_id      = var.vpc_id
 
   dynamic "ingress" {
@@ -64,7 +64,7 @@ resource "aws_security_group" "this" {
       from_port   = 22
       to_port     = 22
       protocol    = "tcp"
-      cidr_blocks = ["0.0.0.0/0"]
+      cidr_blocks = ["10.0.0.0/16"]
     }
   }
 
@@ -90,7 +90,7 @@ resource "aws_security_group" "this" {
   }
 
   tags = {
-    Name   = "sg-${var.name}-${random_id.this.hex}"
+    Name   = "securitygroup-webserver-${var.name}-${random_id.this.hex}"
     Module = path.module
   }
 
@@ -136,4 +136,45 @@ resource "aws_iam_role_policy" "this" {
   lifecycle {
     create_before_destroy = true
   }
+}
+
+# ----------- LOAD BALANCING
+
+resource "aws_lb" "this" {
+  name               = "lb-${var.name}-${random_id.this.hex}"
+  internal           = false
+  load_balancer_type = "application"
+  subnets            = var.vpc_subnets_pub
+  security_groups    = [aws_security_group.this.id]
+}
+
+resource "aws_lb_target_group" "this" {
+  name     = "lb-tg-${var.name}-${random_id.this.hex}"
+  port     = 80
+  protocol = "HTTP"
+  vpc_id   = var.vpc_id
+  health_check {
+    healthy_threshold   = 3
+    unhealthy_threshold = 10
+    timeout             = 5
+    interval            = 10
+    path                = "/"
+    port                = var.http_port
+  }
+}
+
+resource "aws_lb_listener" "this" {
+  load_balancer_arn = aws_lb.this.arn
+  port              = "80"
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.this.arn
+  }
+}
+
+resource "aws_autoscaling_attachment" "this" {
+  alb_target_group_arn   = aws_lb_target_group.this.arn
+  autoscaling_group_name = aws_autoscaling_group.this.id
 }

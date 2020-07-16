@@ -28,6 +28,16 @@ variable "region" {
   type    = string
 }
 
+variable "az_a" {
+  default = ""
+  type    = string
+}
+
+variable "az_b" {
+  default = ""
+  type    = string
+}
+
 variable "instance_type" {
   default = "t2.micro"
   type    = string
