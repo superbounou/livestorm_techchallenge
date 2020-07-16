@@ -53,9 +53,13 @@ resource "aws_route53_zone" "this" {
 }
 
 resource "aws_route53_record" "livestorm" {
+  name = var.sub_domain
   zone_id = aws_route53_zone.this.zone_id
-  name    = var.sub_domain
   type    = "CNAME"
-  ttl     = "60"
-  records = [module.webserver.lb_dns_name]
+
+  alias {
+    name                   = module.webserver.lb_dns_name
+    zone_id                = module.webserver.lb_zone_id
+    evaluate_target_health = true
+  }
 }
